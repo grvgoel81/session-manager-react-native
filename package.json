@@ -41,7 +41,7 @@
     "android"
   ],
   "repository": "https://github.com/grvgoel81/react-native-session-manager",
-  "author": "Gaurav Goel <grvgoel19@gmail.com> (https://github.com/grvgoel81)",
+  "author": "Torus Labs",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/grvgoel81/react-native-session-manager/issues"
@@ -51,8 +51,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@evilmartians/lefthook": "^1.2.2",
     "@commitlint/config-conventional": "^17.0.2",
+    "@evilmartians/lefthook": "^1.2.2",
     "@react-native-community/eslint-config": "^3.0.2",
     "@release-it/conventional-changelog": "^5.0.0",
     "@types/jest": "^28.1.2",
@@ -155,5 +155,10 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "@toruslabs/eccrypto": "^2.1.1",
+    "@toruslabs/metadata-helpers": "^3.1.0",
+    "expo-secure-store": "^12.1.1"
   }
 }
