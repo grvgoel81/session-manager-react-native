@@ -11,10 +11,12 @@ import KeyStore from "./session/KeyStore";
 class SessionManager {
     keyStore: KeyStore;
     sessionId: string;
+    sessionTime: number;
 
-    constructor(sessionId: string, storage: SecureStore|EncryptedStorage) {
+    constructor(sessionId: string, storage: SecureStore|EncryptedStorage, sessionTime: number) {
         this.sessionId = sessionId;    
         this.keyStore = new KeyStore(storage);
+        this.sessionTime = sessionTime;
     }
 
     async createSession(data: string): Promise<boolean> {
@@ -31,19 +33,19 @@ class SessionManager {
               key: pubKey,
               data: encData,
               signature,
-              timeout: 86400
+              timeout: this.sessionTime
             });
             result = true;
           } catch (ex) {
             result = false; 
             log.error(ex);
+            throw new Error("Something went wrong!");
           }
         }
         return result;
       }
 
     async authorizeSession(): Promise<string> {
-        var authorizeResult = ""
         const sessionId = await this.keyStore.get("sessionId");
         if (sessionId && sessionId.length > 0) {
          var pubKey = getPublic(Buffer.from(sessionId, "hex")).toString("hex");
@@ -54,13 +56,11 @@ class SessionManager {
          
          var response = await decryptData<any>(sessionId, result.message);   
    
-         if (!response.error) {
-           authorizeResult = response;
-         } else {
-           throw new Error(`session recovery failed with error ${response.error}`);
+         if (response.error) {
+          throw new Error(`session recovery failed with error ${response.error}`);
          }
-       }
-       return Promise.resolve(authorizeResult)
+        }
+       return Promise.resolve(response)
      }
    
      async invalidateSession(): Promise<boolean> {
@@ -85,6 +85,7 @@ class SessionManager {
          } catch (ex) {
            result = false; 
            log.error(ex);
+           throw new Error("Something went wrong!");
          }
        }
        return result;
